@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Blogger\Shared\Blogger.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ServiceInterfaces\" />
+  </ItemGroup>
+
 </Project>
