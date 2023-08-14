@@ -1,4 +1,6 @@
+using Blogger.Server.DataContext;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+//Configuring Connection String
+var bloggerConnectionString = builder.Configuration.GetConnectionString("Blogger");
+builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(bloggerConnectionString));
 
 var app = builder.Build();
 
