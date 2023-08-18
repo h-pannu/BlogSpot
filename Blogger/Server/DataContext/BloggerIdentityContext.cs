@@ -1,9 +1,8 @@
-﻿using Blogger.Server.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Blogger.Server.Data;
+namespace Blogger.Server.DataContext;
 
 public class BloggerIdentityContext : IdentityDbContext<BloggerUser>
 {

@@ -2,8 +2,6 @@ using Blogger.Server.DataContext;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Blogger.Server.Data;
-using Blogger.Server.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
