@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Blogger.MAUI.Services;
-using Blogger.SharedUI.Pages.Weather;
+using Blogger.SharedUI.ServiceInterfaces;
 
 namespace Blogger.MAUI
 {
@@ -24,6 +24,7 @@ namespace Blogger.MAUI
 #endif
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://ckhp49fh-7025.usw3.devtunnels.ms/") });
             builder.Services.AddSingleton<IWeatherForecastService, WeatherForecastServiceMAUI>();
+            builder.Services.AddSingleton<IAppService, AppService>();
 
             return builder.Build();
         }

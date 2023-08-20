@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Blogger.Shared.Models
 {
-    public class LoginModel
+    public class LoginModelX
     {
-        [Required]
+        [Required, EmailAddress, DataType(DataType.EmailAddress)]
         public string Username { get; set; }
         [Required, MinLength(8)]
         public string password { get; set; }

@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Blogger.Shared;
-using Blogger.SharedUI.Pages.Weather;
+using Blogger.SharedUI.ServiceInterfaces;
 
 namespace Blogger.MAUI.Services
 {

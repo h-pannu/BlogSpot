@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Blogger.Shared;
 
-namespace Blogger.SharedUI.Pages.Weather
+namespace Blogger.SharedUI.ServiceInterfaces
 {
     public interface IWeatherForecastService
     {

@@ -1,66 +1,44 @@
-﻿@page "/login"
+﻿@page "/"
 @using Blogger.Shared.Models;
 
-@inject NavigationManager NavigationManager
+<h3>Login</h3>
 
-@if(_isProcessing)
-{
-    <div class="overlay position-fixed"></div>
-    <div class="loading-wrapper position-fixed d-flex justify-content-center align-items-center">
-        <div class="loading-text fs-1 text-white">Logging-in.....</div>
+<EditForm Model="@loginModel" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Email address</label>
+        <input type="email" @bind-value="loginModel.Username" class="form-control" placeholder="Enter email">
+        <ValidationMessage For="@(() => loginModel.Username)" />
     </div>
-}
+    <div class="mt-2 form-group">
+        <label>Password</label>
+        <input type="password" @bind-value="loginModel.password" class="form-control" placeholder="Password">
+        <ValidationMessage For="@( () => loginModel.password)" />
+    </div>
 
-<EditForm Model="_model" OnValidSubmit="LoginAsync">
-    <DataAnnotationsValidator/>
-    <div class="container mt-5 d-flex justify-content-center">
-    <div class="card" style="width:450px">
-        <div class="card-header">
-            <h2>Login</h2>
-        </div>
-        <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <InputText @bind-Value="@_model.Username" class="form-label" placeholder="Enter Username"/>
-                <ValidationMessage For="()=> _model.Username"/>
-            </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <InputText typeof="password" @bind-Value="@_model.password" class="form-label" placeholder="Enter Password" />
-                    <ValidationMessage For="()=> _model.password" />
-                </div>
-                @if(!string.IsNullOrWhiteSpace(_error))
-                {
-                    <p class="text-danger">@_error</p>
-                }
-        </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-success btn-sm">Login</button>
-        </div>
+    <div class="mt-2 text-end">
+        <NavLink class="nav-link" href="registration">
+            <span>Click here to create new account?</span>
+        </NavLink>
     </div>
-</div>
+
+    <div class="text-center mt-2">
+        <button class="btn btn-primary" type="submit">
+            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+            SignIn
+        </button>
+    </div>
 </EditForm>
 
 @code {
-    private LoginModel _model = new();
+    LoginModel loginModel = new();
 
-    private bool _isProcessing = false;
-    private string? _error = null;
+    private string _spinnerClass = "";
 
-    private async Task LoginAsync()
+    private async void Submit()
     {
-        _error = null;
-        _isProcessing = true;
-        try
-        {
-            await Task.Delay(5000);
-            NavigationManager.NavigateTo("/");
-        }
-        catch (Exception ex)
-        {
-            _isProcessing = false;
-            _error = ex.Message;
-        }
-        
+        _spinnerClass = "spinner-border spinner-border-sm";
+        await Task.Delay(500);
+        _spinnerClass = "";
     }
 }

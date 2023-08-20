@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blogger.Client;
 using Blogger.Client.Services;
-using Blogger.SharedUI.Pages.Weather;
+using Blogger.SharedUI.ServiceInterfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

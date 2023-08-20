@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Blogger.Shared;
-using Blogger.SharedUI.Pages.Weather;
+using Blogger.SharedUI.ServiceInterfaces;
 using static System.Net.WebRequestMethods;
 
 namespace Blogger.Client.Services
