@@ -32,6 +32,7 @@ namespace Blogger.WebAPI.Controllers
             _configuration = configuration;
         }
 
+        [AllowAnonymous]
         //Post Method to create new user
         [HttpPost("RegisterUser")]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO registerUserDTO)
@@ -118,6 +119,9 @@ namespace Blogger.WebAPI.Controllers
         public async Task<IActionResult> AuthenticateUser(AuthenticateUser authenticateUser)
         {
             var user = await _userManager.FindByNameAsync(authenticateUser.UserName);
+            if (user == null)
+                user = await _userManager.FindByEmailAsync(authenticateUser.UserName);
+
             if (user == null) return Unauthorized();
 
             bool isValidUser = await _userManager.CheckPasswordAsync(user, authenticateUser.Password);
@@ -125,7 +129,7 @@ namespace Blogger.WebAPI.Controllers
             if (isValidUser)
             {
                 string accessToken = GenerateAccessToken(user);
-                
+
                 return Ok(accessToken);
             }
             else
