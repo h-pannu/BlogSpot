@@ -1,6 +1,4 @@
-using Blogger.Server.DataContext;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,13 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-//Configuring Connection String
-var bloggerConnectionString = builder.Configuration.GetConnectionString("Blogger");
-builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(bloggerConnectionString));
-builder.Services.AddDbContext<BloggerIdentityContext>(options => options.UseSqlServer(bloggerConnectionString));
-
-builder.Services.AddDefaultIdentity<BloggerUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BloggerIdentityContext>();
 
 var app = builder.Build();
 
