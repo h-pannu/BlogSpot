@@ -1,13 +1,16 @@
 ﻿@page "/"
 @using Blogger.Shared.Models;
+@using Blogger.SharedUI.ServiceInterfaces;
+@inject IAppService AppService;
+@inject IJSRuntime JSRuntime
 
 <h3>Login</h3>
 
 <EditForm Model="@loginModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Email address</label>
-        <input type="email" @bind-value="loginModel.Username" class="form-control" placeholder="Enter email">
+        <label>Username or Email address</label>
+        <input @bind-value="loginModel.Username" class="form-control" placeholder="Enter email or username">
         <ValidationMessage For="@(() => loginModel.Username)" />
     </div>
     <div class="mt-2 form-group">
@@ -31,6 +34,8 @@
 </EditForm>
 
 @code {
+    string message = "Default";
+
     LoginModel loginModel = new();
 
     private string _spinnerClass = "";
@@ -38,7 +43,20 @@
     private async void Submit()
     {
         _spinnerClass = "spinner-border spinner-border-sm";
-        await Task.Delay(500);
+
+        var response = await AppService.AuthenticateUser(loginModel);
+        if(!string.IsNullOrWhiteSpace(response))
+        {
+            message = "Login Successful";
+            await JSRuntime.InvokeAsync<object>("Alert", message);
+        }
+        else
+        {
+            message = "Invalid username or password";
+            await JSRuntime.InvokeAsync<object>("Alert", message);
+            //await App.Current.MainPage.DisplayAlert("Oops", "Invalid username or password", "OK");
+        }
+
         _spinnerClass = "";
         this.StateHasChanged();
     }

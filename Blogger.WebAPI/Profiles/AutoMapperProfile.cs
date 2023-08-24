@@ -10,8 +10,9 @@ namespace Blogger.WebAPI.Profiles
         public AutoMapperProfile()
         {
             CreateMap<Users, RegisterUserDTO>()
-                .ForMember(dest => dest.FullName, opt=>opt.MapFrom(src=>src.FirstName+" "+ src.LastName))
+                //.ForMember(dest => dest.FullName, opt=>opt.MapFrom(src=>src.FirstName+" "+ src.LastName))
                 .ForMember(dest => dest.StreetAddress, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
 
             CreateMap<IdentityRole, CreateRoleDTO>()

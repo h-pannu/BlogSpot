@@ -14,8 +14,8 @@ namespace Blogger.WebAPI.DTO
 
         public string? StreetAddress { get; set; }
 
-        [MaxLength(100)]
-        public string FullName { get; set; } = null!;
+        //[MaxLength(100)]
+        //public string FullName { get; set; } = null!;
 
         public string Email { get; set; } = null!;
 
