@@ -51,5 +51,25 @@ namespace Blogger.MAUI.Services
             }
             return (isSuccess, errorMessage);
         }
+
+        public async Task<string> SetSecureStorage(UserBasicDetail userBasicDetail)
+        {
+            Setting.UserBasicDetail = userBasicDetail;
+            string userBasicInfoStr = JsonConvert.SerializeObject(userBasicDetail);
+            await SecureStorage.SetAsync(nameof(Setting.UserBasicDetail), userBasicInfoStr);
+            return "aa";
+        }
+
+        public async Task<string> GetSecureStorage()
+        {
+            string userDetails = await SecureStorage.GetAsync(nameof(Setting.UserBasicDetail));
+            return userDetails;
+        }
+
+        public void DeleteSecureStorage()
+        {
+            SecureStorage.RemoveAll();
+            Setting.UserBasicDetail = null;
+        }
     }
 }

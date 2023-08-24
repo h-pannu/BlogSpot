@@ -1,4 +1,9 @@
-﻿<div class="container">
+﻿@using Blogger.SharedUI.ServiceInterfaces;
+
+@inject IAppService AppService
+@inject NavigationManager NavManager
+
+<div class="container">
     <header class="d-flex justify-content-center justify-content-md-between flex-wrap py-3">
         <NavLink href="/" class="text-light text-decoration-none fs-4 fw-bold">Blogger</NavLink>
 
@@ -21,9 +26,17 @@
             <NavLink href="/loginx" class="btn btn-primary">Login</NavLink>
         </div>
 
+        <div class="text-end">
+            <NavLink href="#" class="btn btn-primary" @onclick="SignOut">Sign Out</NavLink>
+        </div>
+
     </header>
 </div>
 
 @code {
-
+    private void SignOut()
+    {
+        AppService.DeleteSecureStorage();
+        NavManager.NavigateTo("/login");
+    }
 }

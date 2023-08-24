@@ -1,10 +1,15 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blogger.Shared.Models;
+@inherits LayoutComponentBase
 
 <PageTitle>Blogger</PageTitle>
 
 <div class="page d-flex flex-column">
     <div class="container-fluid bg-purple">
-        <TopNavBar />
+        @if (Setting.UserBasicDetail != null)
+        {
+            <TopNavBar />
+        }
+        
     </div>
 
     <div class="container-fluid flex-grow-1">

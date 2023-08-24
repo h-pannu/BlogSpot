@@ -1,10 +1,12 @@
-﻿@page "/"
+﻿@page "/login"
 @using Blogger.Shared.Models;
 @using Blogger.SharedUI.ServiceInterfaces;
 @using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
 
-@inject IAppService AppService;
+@inject IAppService AppService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
 
 <h3>Login</h3>
 
@@ -12,8 +14,8 @@
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Username or Email address</label>
-        <input @bind-value="loginModel.Username" class="form-control" placeholder="Enter email or username">
-        <ValidationMessage For="@(() => loginModel.Username)" />
+        <input @bind-value="loginModel.UserName" class="form-control" placeholder="Enter email or username">
+        <ValidationMessage For="@(() => loginModel.UserName)" />
     </div>
     <div class="mt-2 form-group">
         <label>Password</label>
@@ -50,9 +52,30 @@
         if(!string.IsNullOrWhiteSpace(response))
         {
             var handler = new JwtSecurityTokenHandler();
+            var jsontoken = handler.ReadToken(response) as JwtSecurityToken;
 
-            message = "Login Successful";
-            await JSRuntime.InvokeAsync<object>("Alert", message);
+            // string userID = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.NameId).Value;
+            // string name = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.Name).Value;
+
+            string userID = jsontoken.Claims.First(f => f.Type == JwtRegisteredClaimNames.NameId).Value;
+            string name = jsontoken.Claims.First(f => f.Type == JwtRegisteredClaimNames.UniqueName).Value;
+
+            string email = loginModel.UserName;
+
+            var userBasicDetail = new UserBasicDetail
+                {
+                    Email = email,
+                    Name = name,
+                    Token = response,
+                    UserID = userID
+                };
+
+            await AppService.SetSecureStorage(userBasicDetail);
+
+            NavManager.NavigateTo("/dashboard");
+
+            //message = "Login Successful";
+            //await JSRuntime.InvokeAsync<object>("Alert", message);
         }
         else
         {

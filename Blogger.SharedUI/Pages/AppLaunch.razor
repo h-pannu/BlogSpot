@@ -1,0 +1,42 @@
+﻿@page "/"
+
+@using Blogger.Shared.Models;
+@using Blogger.SharedUI.ServiceInterfaces;
+@using System.IdentityModel.Tokens.Jwt;
+@using Newtonsoft.Json;
+
+@inject IAppService AppService
+@inject NavigationManager NavManager
+
+<h3>AppLaunch</h3>
+
+Loading.....
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        string userDetailsStr = await AppService.GetSecureStorage();
+
+        if (!string.IsNullOrWhiteSpace(userDetailsStr))
+        {
+            var userBasicDetail = JsonConvert.DeserializeObject<UserBasicDetail>(userDetailsStr);
+
+            var handler = new JwtSecurityTokenHandler();
+            var jsontoken = handler.ReadToken(userBasicDetail.Token) as JwtSecurityToken;
+
+            if(jsontoken.ValidTo < DateTime.UtcNow)
+            {
+                NavManager.NavigateTo("/login");
+            }
+            else
+            {
+                Setting.UserBasicDetail = userBasicDetail;
+                NavManager.NavigateTo("/dashboard");
+            }
+        }
+        else
+        {
+            NavManager.NavigateTo("/login");
+        }
+    }
+}

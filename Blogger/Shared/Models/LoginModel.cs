@@ -10,7 +10,7 @@ namespace Blogger.Shared.Models
     public class LoginModel
     {
         [Required]
-        public string Username { get; set; }
+        public string UserName { get; set; }
         [Required, MinLength(8)]
         public string password { get; set; }
     }
