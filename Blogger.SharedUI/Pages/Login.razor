@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using Blogger.Shared.Models;
 @using Blogger.SharedUI.ServiceInterfaces;
+@using System.IdentityModel.Tokens.Jwt
+
 @inject IAppService AppService;
 @inject IJSRuntime JSRuntime
 
@@ -47,6 +49,8 @@
         var response = await AppService.AuthenticateUser(loginModel);
         if(!string.IsNullOrWhiteSpace(response))
         {
+            var handler = new JwtSecurityTokenHandler();
+
             message = "Login Successful";
             await JSRuntime.InvokeAsync<object>("Alert", message);
         }
