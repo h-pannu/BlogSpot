@@ -17,14 +17,16 @@ namespace Blogger.WebAPI.Data
 
         public string? Address { get; set; }
 
+        public string? RefreshToken { get; set; }
 
-//DROP TABLE __EFMigrationsHistory
-//Drop Table AspNetRoleClaims
-//DROP TABLE AspNetUserLogins
-//DROP TABLE AspNetUserRoles
-//DROP TABLE AspNetUserClaims
-//Drop Table AspNetUserTokens
-//DROP TABLE AspNetRoles
-//DROP TABLE AspNetUsers
+
+        //DROP TABLE __EFMigrationsHistory
+        //Drop Table AspNetRoleClaims
+        //DROP TABLE AspNetUserLogins
+        //DROP TABLE AspNetUserRoles
+        //DROP TABLE AspNetUserClaims
+        //Drop Table AspNetUserTokens
+        //DROP TABLE AspNetRoles
+        //DROP TABLE AspNetUsers
     }
 }

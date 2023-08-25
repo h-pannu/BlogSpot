@@ -9,9 +9,10 @@ namespace Blogger.SharedUI.ServiceInterfaces
 {
     public interface IAppService
     {
-        public Task<string> AuthenticateUser(LoginModel loginModel);
-        public Task<(bool IsSuccess, string ErrorMessage)> RegisterUser(RegistrationModel registrationModel);
-        public Task<string> SetSecureStorage(UserBasicDetail userBasicDetail);
+        public Task<MainResponse> AuthenticateUser(LoginModel loginModel);
+        Task<Boolean> RefreshToken();
+        Task<(bool IsSuccess, string ErrorMessage)> RegisterUser(RegistrationModel registrationModel);
+        public Task<string> SetSecureStorage(string userBasicInfoStr);
         public Task<string> GetSecureStorage();
         public void DeleteSecureStorage();
     }

@@ -12,64 +12,105 @@ namespace Blogger.MAUI.Services
 {
     public class AppService : IAppService
     {
-        private string _baseUrl = "https://ckhp49fh-7231.usw3.devtunnels.ms";
-        public async Task<string> AuthenticateUser(LoginModel loginModel)
-        {
-            string returnStr = string.Empty;
-            using(var httpClient = new HttpClient())
-            {
-                var url = $"{_baseUrl}{APIs.AuthenticateUser}";
 
-                var serializedStr = JsonConvert.SerializeObject(loginModel) ;
-                var response = await httpClient.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
+        public async Task<MainResponse> AuthenticateUser(LoginModel loginModel)
+        {
+            var returnResponse = new MainResponse();
+            using (var client = new HttpClient())
+            {
+                var url = $"{Setting.BaseUrl}{APIs.AuthenticateUser}";
+
+                var serializedStr = JsonConvert.SerializeObject(loginModel);
+
+                var response = await client.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
+
                 if (response.IsSuccessStatusCode)
                 {
-                    returnStr = await response.Content.ReadAsStringAsync();
+                    string contentStr = await response.Content.ReadAsStringAsync();
+                    returnResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr);
                 }
             }
-            return returnStr;
+            return returnResponse;
         }
 
-        public async Task<(bool IsSuccess, string ErrorMessage)> RegisterUser(RegistrationModel registrationModel)
+        public async Task<(bool IsSuccess, string ErrorMessage)> RegisterUser(RegistrationModel registerUser)
         {
             string errorMessage = string.Empty;
             bool isSuccess = false;
-            using (var httpClient = new HttpClient())
+            using (var client = new HttpClient())
             {
-                var url = $"{_baseUrl}{APIs.RegisterUser}";
+                var url = $"{Setting.BaseUrl}{APIs.RegisterUser}";
 
-                var serializedStr = JsonConvert.SerializeObject(registrationModel);
-                var response = await httpClient.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
+                var serializedStr = JsonConvert.SerializeObject(registerUser);
+                var response = await client.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {
                     isSuccess = true;
                 }
                 else
                 {
-                    errorMessage=await response.Content.ReadAsStringAsync();
+                    errorMessage = await response.Content.ReadAsStringAsync();
                 }
             }
             return (isSuccess, errorMessage);
         }
 
-        public async Task<string> SetSecureStorage(UserBasicDetail userBasicDetail)
+        public async Task<string> SetSecureStorage(string userBasicInfoStr)
         {
-            Setting.UserBasicDetail = userBasicDetail;
-            string userBasicInfoStr = JsonConvert.SerializeObject(userBasicDetail);
             await SecureStorage.SetAsync(nameof(Setting.UserBasicDetail), userBasicInfoStr);
-            return "aa";
+            return "Set Secure Storage";
         }
 
         public async Task<string> GetSecureStorage()
         {
-            string userDetails = await SecureStorage.GetAsync(nameof(Setting.UserBasicDetail));
-            return userDetails;
+            string userDetailsStr = await SecureStorage.GetAsync(nameof(Setting.UserBasicDetail));
+            return userDetailsStr;
         }
 
         public void DeleteSecureStorage()
         {
             SecureStorage.RemoveAll();
             Setting.UserBasicDetail = null;
+        }
+
+        public async Task<bool> RefreshToken()
+        {
+            bool isTokenRefreshed = false;
+            using (var client = new HttpClient())
+            {
+                var url = $"{Setting.BaseUrl}{APIs.RefreshToken}";
+
+                var serializedStr = JsonConvert.SerializeObject(new AuthenticateRequestAndResponse
+                {
+                    RefreshToken = Setting.UserBasicDetail.RefreshToken,
+                    AccessToken = Setting.UserBasicDetail.AccessToken
+                });
+
+                try
+                {
+                    var response = await client.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string contentStr = await response.Content.ReadAsStringAsync();
+                        var mainResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr);
+                        if (mainResponse.IsSuccess)
+                        {
+                            var tokenDetails = JsonConvert.DeserializeObject<AuthenticateRequestAndResponse>(mainResponse.Content.ToString());
+                            Setting.UserBasicDetail.AccessToken = tokenDetails.AccessToken;
+                            Setting.UserBasicDetail.RefreshToken = tokenDetails.RefreshToken;
+
+                            string userDetailsStr = JsonConvert.SerializeObject(Setting.UserBasicDetail);
+                            await SecureStorage.SetAsync(nameof(Setting.UserBasicDetail), userDetailsStr);
+                            isTokenRefreshed = true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string msg = ex.Message;
+                }
+            }
+            return isTokenRefreshed;
         }
     }
 }

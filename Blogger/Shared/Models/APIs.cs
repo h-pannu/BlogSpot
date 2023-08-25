@@ -10,5 +10,6 @@ namespace Blogger.Shared.Models
     {
         public const string AuthenticateUser = "/api/Users/AuthenticateUser";
         public const string RegisterUser = "/api/Users/RegisterUser";
+        public const string RefreshToken = "/api/Users/RefreshToken";
     }
 }

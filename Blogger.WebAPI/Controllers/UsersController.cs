@@ -10,6 +10,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Blogger.WebAPI.Data;
 using Blogger.WebAPI.DTO;
+using Blogger.Shared.Models;
+using System.Net;
 
 namespace Blogger.WebAPI.Controllers
 {
@@ -129,8 +131,21 @@ namespace Blogger.WebAPI.Controllers
             if (isValidUser)
             {
                 string accessToken = GenerateAccessToken(user);
+                var refreshToken = GenerateRefreshToken();
+                user.RefreshToken = refreshToken;
+                await _userManager.UpdateAsync(user);
 
-                return Ok(accessToken);
+                var response = new MainResponse
+                {
+                    Content = new AuthenticateRequestAndResponse
+                    {
+                        RefreshToken = refreshToken,
+                        AccessToken = accessToken
+                    },
+                    IsSuccess = true,
+                    ErrorMessage = ""
+                };
+                return Ok(response);
             }
             else
             {
@@ -156,14 +171,93 @@ namespace Blogger.WebAPI.Controllers
             {
                 Audience = _configuration["JWT:Audience"],
                 Issuer = _configuration["JWT:Issuer"],
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(1),
                 Subject = new ClaimsIdentity(claims),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyDetail), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        private string GenerateRefreshToken()
+        {
 
-        
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+        {
+            var response = new MainResponse();
+            if (refreshTokenRequest is null)
+            {
+                response.ErrorMessage = "Invalid  request";
+                return BadRequest(response);
+            }
+
+            var principal = GetPrincipalFromExpiredToken(refreshTokenRequest.AccessToken);
+
+            if (principal != null)
+            {
+                var email = principal.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Email);
+
+                var user = await _userManager.FindByEmailAsync(email?.Value);
+
+                if (user is null || user.RefreshToken != refreshTokenRequest.RefreshToken)
+                {
+                    response.ErrorMessage = "Invalid Request";
+                    return BadRequest(response);
+                }
+
+                string newAccessToken = GenerateAccessToken(user);
+                string refreshToken = GenerateRefreshToken();
+
+                user.RefreshToken = refreshToken;
+                await _userManager.UpdateAsync(user);
+
+                response.IsSuccess = true;
+                response.Content = new AuthenticateRequestAndResponse
+                {
+                    RefreshToken = refreshToken,
+                    AccessToken = newAccessToken
+                };
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Error Found");
+            }
+        }
+
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var keyDetail = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+            var tokenValidationParameter = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _configuration["JWT:Issuer"],
+                ValidAudience = _configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(keyDetail),
+            };
+
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameter, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+            return principal;
+        }
+
+       
     }
 }
