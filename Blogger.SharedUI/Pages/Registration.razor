@@ -89,7 +89,7 @@
     private string _spinnerClass = "";
 
     private string _userAvatar = "images/user.png";
-    private string _imageBase64Data;
+    private string _imageBase64Data = string.Empty;
 
     private async void Submit()
     {
@@ -119,10 +119,12 @@
 
     private async void DisplayAction()
     {
-        string response = await AppService.DisplayAction(_userAvatar, _imageBase64Data);
-        if(!string.IsNullOrWhiteSpace(response))
+        var response = await AppService.DisplayAction(_userAvatar, _imageBase64Data);
+        
+        if (!string.IsNullOrWhiteSpace(response.ImageBase))
         {
-            _userAvatar = response;
+            _userAvatar = response.Avatar;
+            _imageBase64Data = response.ImageBase;
             this.StateHasChanged();
         }
        

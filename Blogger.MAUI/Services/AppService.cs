@@ -112,7 +112,7 @@ namespace Blogger.MAUI.Services
             return isTokenRefreshed;
         }
 
-        public async Task<string> DisplayAction(string _userAvatar, string _imageBase64Data)
+        public async Task<(string Avatar, string ImageBase)> DisplayAction(string _userAvatar, string _imageBase64Data)
         {
             string result = string.Empty;
             string response = await App.Current.MainPage.DisplayActionSheet("Select Option", "OK", null, "Take Photo", "Add Photo");
@@ -160,7 +160,7 @@ namespace Blogger.MAUI.Services
                     //this.StateHasChanged();
                 }
             }
-            return result;
+            return (_userAvatar,_imageBase64Data);
         }
     }
 }
