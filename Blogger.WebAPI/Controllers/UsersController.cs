@@ -40,6 +40,15 @@ namespace Blogger.WebAPI.Controllers
         public async Task<IActionResult> RegisterUser(RegisterUserDTO registerUserDTO)
         {
             Users users = _mapper.Map<Users>(registerUserDTO);
+
+            if (!string.IsNullOrWhiteSpace(registerUserDTO.UserAvatar))
+            {
+                byte[] imgBytes = Convert.FromBase64String(registerUserDTO.UserAvatar);
+                string fileName = $"{Guid.NewGuid()}_{users.FirstName.Trim()}_{users.LastName.Trim()}.jpeg";
+                string avatar = await UploadFile(imgBytes, fileName);
+                users.UserAvatar = avatar;
+            }
+
             var response = await _userManager.CreateAsync(users,registerUserDTO.Password);
 
             if(response.Succeeded)
@@ -50,6 +59,17 @@ namespace Blogger.WebAPI.Controllers
             {
                 return BadRequest(response.Errors);
             }
+        }
+
+        private async Task<string> UploadFile(byte[] bytes, string fileName)
+        {
+            string uploadsFolder = Path.Combine("Images", fileName);
+            Stream stream = new MemoryStream(bytes);
+            using (var ms = new FileStream(uploadsFolder, FileMode.Create))
+            {
+                await stream.CopyToAsync(ms);
+            }
+            return uploadsFolder;
         }
 
         //Delete method to delete existing user by email.

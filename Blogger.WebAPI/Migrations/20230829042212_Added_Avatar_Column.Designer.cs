@@ -4,6 +4,7 @@ using Blogger.WebAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogger.WebAPI.Migrations
 {
     [DbContext(typeof(BloggerDBContext))]
-    partial class BloggerDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230829042212_Added_Avatar_Column")]
+    partial class Added_Avatar_Column
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
