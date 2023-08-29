@@ -12,7 +12,6 @@ namespace Blogger.MAUI.Services
 {
     public class AppService : IAppService
     {
-
         public async Task<MainResponse> AuthenticateUser(LoginModel loginModel)
         {
             var returnResponse = new MainResponse();
@@ -111,6 +110,57 @@ namespace Blogger.MAUI.Services
                 }
             }
             return isTokenRefreshed;
+        }
+
+        public async Task<string> DisplayAction(string _userAvatar, string _imageBase64Data)
+        {
+            string result = string.Empty;
+            string response = await App.Current.MainPage.DisplayActionSheet("Select Option", "OK", null, "Take Photo", "Add Photo");
+
+            if (response == "Take Photo")
+            {
+                if (MediaPicker.Default.IsCaptureSupported)
+                {
+                    var photo = await MediaPicker.Default.CapturePhotoAsync();
+                    if (photo != null)
+                    {
+                        byte[] imageBytes;
+                        var newFile = System.IO.Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+                        var stream = await photo.OpenReadAsync();
+
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            stream.CopyTo(ms);
+                            imageBytes = ms.ToArray();
+                        }
+                        _imageBase64Data = Convert.ToBase64String(imageBytes);
+                        _userAvatar = string.Format("data:image/png;base64,{0}", _imageBase64Data);
+                        result= _userAvatar;
+                        //this.StateHasChanged();
+                    }
+                }
+            }
+            else if (response == "Add Photo")
+            {
+                var photo = await MediaPicker.Default.PickPhotoAsync();
+                if (photo != null)
+                {
+                    byte[] imageBytes;
+                    var newFile = System.IO.Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+                    var stream = await photo.OpenReadAsync();
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        stream.CopyTo(ms);
+                        imageBytes = ms.ToArray();
+                    }
+                    _imageBase64Data = Convert.ToBase64String(imageBytes);
+                    _userAvatar = string.Format("data:image/png;base64,{0}", _imageBase64Data);
+                    result = _userAvatar;
+                    //this.StateHasChanged();
+                }
+            }
+            return result;
         }
     }
 }

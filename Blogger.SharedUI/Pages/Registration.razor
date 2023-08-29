@@ -7,8 +7,13 @@
 
 <h3>Registration</h3>
 
-<EditForm Model="@registrationModel" OnValidSubmit="Submitt">
+<EditForm Model="@registrationModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
+
+    <div class="mb-2">
+        <img src="@_userAvatar" @onclick="DisplayAction" height="50" width="50" class="rounded-circle" />
+    </div>
+
 
     <div class="form-group">
         <label>First Name</label>
@@ -83,9 +88,17 @@
 
     private string _spinnerClass = "";
 
-    private async void Submitt()
+    private string _userAvatar = "images/user.png";
+    private string _imageBase64Data;
+
+    private async void Submit()
     {
         _spinnerClass = "spinner-border spinner-border-sm";
+
+        if (!string.IsNullOrWhiteSpace(_imageBase64Data))
+        {
+            registrationModel.UserAvatar = _imageBase64Data;
+        }
 
         var response = await AppService.RegisterUser(registrationModel);
         if (response.IsSuccess)
@@ -102,6 +115,18 @@
 
         _spinnerClass = "";
         this.StateHasChanged();
+    }
+
+    private async void DisplayAction()
+    {
+        string response = await AppService.DisplayAction(_userAvatar, _imageBase64Data);
+        if(!string.IsNullOrWhiteSpace(response))
+        {
+            _userAvatar = response;
+            this.StateHasChanged();
+        }
+       
+        
     }
 
 }

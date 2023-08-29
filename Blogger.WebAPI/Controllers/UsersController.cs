@@ -184,7 +184,7 @@ namespace Blogger.WebAPI.Controllers
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, $"{user.FirstName} { user.LastName}"),
                     new Claim(ClaimTypes.Email, user.Email),
-
+                    new Claim("UserAvatar", $"{user.UserAvatar}"),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor

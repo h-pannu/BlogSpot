@@ -60,6 +60,7 @@
             string userID = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.NameId).Value;
             string name = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.UniqueName).Value;
             //string name = jsontoken.Claims.First(f => f.Type == JwtRegisteredClaimNames.UniqueName).Value;
+            string userAvatar = jsontoken.Claims.FirstOrDefault(f => f.Type == "UserAvatar").Value;
 
             string email = loginModel.UserName;
 
@@ -69,6 +70,7 @@
                     Name = name,
                     AccessToken = tokenResponse.AccessToken,
                     RefreshToken = tokenResponse.RefreshToken,
+                    UserAvatar = !string.IsNullOrWhiteSpace(userAvatar) ? $"{Setting.BaseUrl}/{userAvatar}" : "",
                     UserID = userID
                 };
 
