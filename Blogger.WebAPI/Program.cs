@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +9,18 @@ using Blogger.WebAPI.Data;
 using Blogger.WebAPI.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.WithOrigins("https://localhost:7231/")
+builder.Services.AddCors(policy =>
+{
+    policy.AddPolicy("_myAllowSpecificOrigins", builder =>
+     builder.WithOrigins("https://localhost:7231/")
+      .SetIsOriginAllowed((host) => true) // this for using localhost address
+      .AllowAnyMethod()
+      .AllowAnyHeader()
+      .AllowCredentials());
+});
+//
 
 //Configuring Connection String
 var Conn_String = builder.Configuration.GetConnectionString("Conn_String");
@@ -89,12 +101,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseCors("_myAllowSpecificOrigins");
+
 app.UseHttpsRedirection();
+
+app.UseCors("_myAllowSpecificOrigins"); 
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();
