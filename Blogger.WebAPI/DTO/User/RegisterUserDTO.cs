@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Blogger.WebAPI.DTO
+namespace Blogger.WebAPI.DTO.User
 {
     public class RegisterUserDTO
     {
@@ -21,7 +21,7 @@ namespace Blogger.WebAPI.DTO
 
         [MaxLength(50)]
         public string UserName { get; set; } = null!;
-        
+
         public string Password { get; set; } = null!;
         public string UserAvatar { get; set; }
 

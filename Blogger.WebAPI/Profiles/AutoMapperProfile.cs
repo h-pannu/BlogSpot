@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Blogger.WebAPI.Data;
-using Blogger.WebAPI.DTO;
+using Blogger.WebAPI.DTO.User;
+using Blogger.WebAPI.DTO.Category;
+using Blogger.Shared.Models;
 
 namespace Blogger.WebAPI.Profiles
 {
@@ -17,6 +19,10 @@ namespace Blogger.WebAPI.Profiles
 
             CreateMap<IdentityRole, CreateRoleDTO>()
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
+
+            CreateMap<Category, CategoryDTO>()
+                //.ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
         }
     }

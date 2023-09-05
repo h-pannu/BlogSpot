@@ -9,9 +9,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Blogger.WebAPI.Data;
-using Blogger.WebAPI.DTO;
 using Blogger.Shared.Models;
 using System.Net;
+using Blogger.WebAPI.DTO.User;
 
 namespace Blogger.WebAPI.Controllers
 {

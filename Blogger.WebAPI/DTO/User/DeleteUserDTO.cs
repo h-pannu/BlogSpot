@@ -1,4 +1,4 @@
-﻿namespace Blogger.WebAPI.DTO
+﻿namespace Blogger.WebAPI.DTO.User
 {
     public class DeleteUserDTO
     {

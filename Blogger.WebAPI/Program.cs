@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Blogger.WebAPI.Data;
 using Blogger.WebAPI.DBContext;
+using Blogger.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ var Conn_String = builder.Configuration.GetConnectionString("Conn_String");
 builder.Services.AddDbContext<BloggerDBContext>(options => options.UseSqlServer(Conn_String));
 
 builder.Services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<BloggerDBContext>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Configured Auto mappers
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

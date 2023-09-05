@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blogger.MAUI", "Blogger.MAU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blogger.WebAPI", "Blogger.WebAPI\Blogger.WebAPI.csproj", "{D2CF8FB9-CAC9-4227-9B48-A251E2B96EF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogger.WebAssembly", "Blogger.WebAssembly\Blogger.WebAssembly.csproj", "{2BBC2617-81E8-471F-A1EF-31B70C7CCF56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blogger.WebAssembly", "Blogger.WebAssembly\Blogger.WebAssembly.csproj", "{2BBC2617-81E8-471F-A1EF-31B70C7CCF56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
