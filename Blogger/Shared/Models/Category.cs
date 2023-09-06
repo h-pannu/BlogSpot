@@ -17,5 +17,6 @@ namespace Blogger.Shared.Models
         public string Name { get; set; }
         [Required, MaxLength(200)]
         public string Slug { get; set; }
+        public Category Clone() => (Category)this.MemberwiseClone();
     }
 }
