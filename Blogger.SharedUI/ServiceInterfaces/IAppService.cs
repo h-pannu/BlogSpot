@@ -16,6 +16,5 @@ namespace Blogger.SharedUI.ServiceInterfaces
         public Task<string> GetSecureStorage();
         public void DeleteSecureStorage();
         Task<(string Avatar, string ImageBase)> DisplayAction(string _userAvatar, string _imageBase64Data);
-
     }
 }

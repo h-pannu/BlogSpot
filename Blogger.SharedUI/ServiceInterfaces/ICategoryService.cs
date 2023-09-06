@@ -9,6 +9,8 @@ namespace Blogger.SharedUI.ServiceInterfaces
 {
     public interface ICategoryService
     {
-        public IEnumerable<Category> GetCategoriesAsync();
+        Task<List<Category>> GetAllCategories();
+        //Task<string> DeleteCategory(int Id);
+        Task<MethodResult> SaveCategoryAsync(Category category);
     }
 }

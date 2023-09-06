@@ -85,7 +85,7 @@ namespace Blogger.WebAPI.Services
             return response;
         }
 
-        public async Task<MainResponse> GetAllCategory()
+        public async Task<MainResponse> GetAllCategories()
         {
             var response = new MainResponse();
             try

@@ -17,12 +17,12 @@ namespace Blogger.WebAPI.Controllers
                 _categoryService = categoryService;
         }
 
-        [HttpGet("GetAllCategory")]
-        public async Task<IActionResult> GetAllCategory()
+        [HttpGet("GetAllCategories")]
+        public async Task<IActionResult> GetAllCategories()
         {
             try
             {
-                var response = await _categoryService.GetAllCategory();
+                var response = await _categoryService.GetAllCategories();
                 return Ok(response);
             }
             catch (Exception ex)

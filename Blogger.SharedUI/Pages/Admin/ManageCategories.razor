@@ -1,5 +1,7 @@
 ﻿@page "/admin/manage-categories"
-@using Blogger.Shared.Models;
+
+@inject ICategoryService CategoryService;
+@inject IJSRuntime Js
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
@@ -14,19 +16,103 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Slug</th>
+                <th>Delete Record</th>
             </tr>
         </thead>
         <tbody>
-
+            @if(_loading)
+            {
+                <tr>
+                    <td colspan="4">
+                        Loading categories.......
+                    </td>
+                </tr>
+            }
+            else if(!_loading && (Categories is null || !Categories.Any()))
+            {
+                <tr>
+                    <td colspan="4">
+                        no categories found
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int sno = 1;
+                @foreach (var category in Categories)
+                {
+                    <tr>
+                        <td>@sno</td>
+                        <td>@category.Id</td>
+                        <td>@category.Name</td>
+                        <td>@category.Slug</td>
+                        <td><button class="btn btn-primary btn-sm">Delete</button></td>   @* @onclick="() => DeleteCategory(category.Id)" *@
+                    </tr>
+                    sno++;
+                }
+            }
         </tbody>
     </table>
 </div>
+<dialog open>
+    <SaveCategoryForm OnSaveCategory="OnSaveCat" />
+</dialog>
+<style type="text/css">
+dialog{
+    padding:0;
+    border: 2px solid;
+}    
+</style>
+
 
 @code {
-    private IEnumerable<Category>? _categories = null;
+    private bool _loading = false;
+    private List<Category> Categories;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        
+        await LoadCategoriesAsync();
     }
+
+    private async Task LoadCategoriesAsync()
+    {
+        _loading = true;
+        try
+        {
+            Categories = await CategoryService.GetAllCategories();
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task OnSaveCat(MethodResult saveCategoryResult)
+    {
+        if(saveCategoryResult.Status)
+        {
+            //Category saved successfully
+            await AlertAsync("Category Saved Successfully");
+            await LoadCategoriesAsync();
+        }
+        else
+        {
+            //there was some error
+            await AlertAsync(saveCategoryResult.ErrorMessage!);
+        }
+    }
+
+    private async Task AlertAsync(string message)
+    {
+        await Js.InvokeVoidAsync("window.alert", message);
+    }
+
+    // private async void DeleteCategory(int Id)
+    // {
+    //     await CategoryService.DeleteCategory(Id);
+    // }
 }
