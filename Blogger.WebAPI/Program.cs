@@ -29,6 +29,7 @@ builder.Services.AddDbContext<BloggerDBContext>(options => options.UseSqlServer(
 
 builder.Services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<BloggerDBContext>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
 
 // Configured Auto mappers
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Blogger.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blogger.Shared.Models
+namespace Blogger.Shared.DTO
 {
-    [Table("Blog", Schema = "Blogger")]
-    public class Blog
+    public class BlogDTO
     {
         [Key]
         public int Id { get; set; }
@@ -27,6 +26,5 @@ namespace Blogger.Shared.Models
         public DateTime? PublishedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public virtual Category? Category { get; set; }
-        //public virtual Blogger.WebAPI.Data.Users User { get; set; }
     }
 }
