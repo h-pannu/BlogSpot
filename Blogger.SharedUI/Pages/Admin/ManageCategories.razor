@@ -47,7 +47,7 @@
                         <td>@category.Name</td>
                         <td>@category.Slug</td>
                         <td><button class="btn btn-primary btn-sm" @onclick="() => EditCategoryAsync(category)">Edit</button></td>
-                        <td><button class="btn btn-primary btn-sm">Delete</button></td>   @* @onclick="() => DeleteCategory(category.Id)" *@
+                        <td><button class="btn btn-primary btn-sm" @onclick="() => DeleteCategoryAsync(category.Id)">Delete</button></td>   
                     </tr>
                     sno++;
                 }
@@ -134,8 +134,10 @@ dialog{
         await Js.InvokeVoidAsync("window.openModal", _categoryFormDialogId);
     }
 
-    // private async void DeleteCategory(int Id)
-    // {
-    //     await CategoryService.DeleteCategory(Id);
-    // }
+    private async void DeleteCategoryAsync(int Id)
+    {
+        await CategoryService.DeleteCategory(Id);
+        await LoadCategoriesAsync();
+        await AlertAsync("Category Deleted Successfully");
+    }
 }

@@ -75,12 +75,12 @@ namespace Blogger.WebAPI.Controllers
 
         }
 
-        [HttpDelete("DeleteCategory")]
-        public async Task<IActionResult> DeleteCategory([FromBody] DeleteCategoryDTO categoryInfo)
+        [HttpDelete("DeleteCategory/{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
         {
             try
             {
-                var response = await _categoryService.DeleteCategory(categoryInfo);
+                var response = await _categoryService.DeleteCategory(id);
                 return Ok(response);
 
             }

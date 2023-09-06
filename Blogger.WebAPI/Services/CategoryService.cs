@@ -48,18 +48,18 @@ namespace Blogger.WebAPI.Services
             return response;
         }
 
-        public async Task<MainResponse> DeleteCategory(DeleteCategoryDTO categoryDTO)
+        public async Task<MainResponse> DeleteCategory(int id)
         {
             var response = new MainResponse();
             try
             {
-                if (categoryDTO.CategoryID < 0)
+                if (id < 0)
                 {
                     response.ErrorMessage = "Please pass Category ID";
                     return response;
                 }
 
-                var existingCategory = _context.Categories.Where(f => f.Id == categoryDTO.CategoryID).FirstOrDefault();
+                var existingCategory = _context.Categories.Where(f => f.Id == id).FirstOrDefault();
 
                 if (existingCategory != null)
                 {

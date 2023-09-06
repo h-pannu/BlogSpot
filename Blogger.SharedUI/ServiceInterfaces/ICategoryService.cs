@@ -10,7 +10,7 @@ namespace Blogger.SharedUI.ServiceInterfaces
     public interface ICategoryService
     {
         Task<List<Category>> GetAllCategories();
-        //Task<string> DeleteCategory(int Id);
         Task<MethodResult> SaveCategoryAsync(Category category);
+        Task<MethodResult> DeleteCategory(int Id);
     }
 }

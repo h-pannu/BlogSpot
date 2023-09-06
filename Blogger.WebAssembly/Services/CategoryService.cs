@@ -46,8 +46,6 @@ namespace Blogger.WebAssembly.Services
         public async Task<MethodResult> SaveCategoryAsync(Category category)
         {
             category.Slug = category.Slug.Slugify();
-
-            string returnResponse = string.Empty;
             try
             {
                 using (var client = new HttpClient())
@@ -101,38 +99,34 @@ namespace Blogger.WebAssembly.Services
             //return returnResponse;
         }
 
+        public async Task<MethodResult> DeleteCategory(int Id)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = $"{Setting.BaseUrl}{APIs.DeleteCategory}/{Id}";
 
+                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
+                var response = await client.DeleteAsync(url);
 
-        //public async Task<string> DeleteCategory(int Id)
-        //{
-        //    var returnResponse = new List<String>();
-        //    using (var client = new HttpClient())
-        //    {
-        //        var url = $"{Setting.BaseUrl}{APIs.DeleteCategory}";
-
-        //        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
-        //        var response = await client.GetAsync(url);
-
-        //        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        //        {
-        //            bool isTokenRefreshed = await SharedMethods.RefreshToken();
-        //            if (isTokenRefreshed) return await DeleteCategory(Id);
-        //        }
-        //        else
-        //        {
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                string contentStr = await response.Content.ReadAsStringAsync();
-        //                var mainResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr);
-        //                if (mainResponse.IsSuccess)
-        //                {
-        //                    returnResponse = JsonConvert.DeserializeObject<List<String>>(mainResponse.Content.ToString());
-        //                }
-        //            }
-        //        }
-
-        //    }
-        //    return returnResponse;
-        //}
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    bool isTokenRefreshed = await SharedMethods.RefreshToken();
+                    if (isTokenRefreshed) return await DeleteCategory(Id);
+                }
+                else
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string contentStr = await response.Content.ReadAsStringAsync();
+                        var mainResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr);
+                        //if (mainResponse.IsSuccess)
+                        //{
+                        //    returnResponse = JsonConvert.DeserializeObject<List<String>>(mainResponse.Content.ToString());
+                        //}
+                    }
+                }
+                return MethodResult.Success();
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace Blogger.WebAPI.Services
     {
         Task<MainResponse> AddCategory(CategoryDTO CategoryDTO);
         Task<MainResponse> UpdateCategory(CategoryDTO CategoryDTO);
-        Task<MainResponse> DeleteCategory(DeleteCategoryDTO CategoryDTO);
+        Task<MainResponse> DeleteCategory(int id);
         Task<MainResponse> GetAllCategories();
         Task<MainResponse> GetCategoryByCategoryID(int CategoryID);
     }
