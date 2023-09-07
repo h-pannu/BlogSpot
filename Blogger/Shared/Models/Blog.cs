@@ -27,6 +27,7 @@ namespace Blogger.Shared.Models
         public DateTime? PublishedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public virtual Category? Category { get; set; }
+        public Blog Clone() => (Blog)this.MemberwiseClone();
         //public virtual Blogger.WebAPI.Data.Users User { get; set; }
     }
 }

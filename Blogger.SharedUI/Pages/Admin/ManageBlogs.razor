@@ -1,5 +1,143 @@
 ﻿@page "/admin/manage-blogs"
 
-@code {
+@inject IBlogService BlogService;
+@inject IJSRuntime Js
 
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Manage Blogs</h3>
+        <button class="btn btn-primary btn-sm" @onclick="OpenBlogFormAsync">+ Add new Blog</button>
+    </div>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Delete Record</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_loading)
+            {
+                <tr>
+                    <td colspan="4">
+                        Loading Blogs.......
+                    </td>
+                </tr>
+            }
+            else if (!_loading && (Blogs is null || !Blogs.Any()))
+            {
+                <tr>
+                    <td colspan="4">
+                        no Blogs found
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int sno = 1;
+                @foreach (var Blog in Blogs)
+                {
+                    <tr>
+                        <td>@sno</td>
+                        <td>@Blog.Id</td>
+                        <td>@Blog.Title</td>
+                        <td>@Blog.Slug</td>
+                        <td><button class="btn btn-primary btn-sm" @onclick="() => EditBlogAsync(Blog)">Edit</button></td>
+                        <td><button class="btn btn-primary btn-sm" @onclick="() => DeleteBlogAsync(Blog.Id)">Delete</button></td>
+                    </tr>
+                    sno++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<dialog id="@_BlogFormDialogId">
+    <SaveBlogForm BlogParm="_BlogModel" OnSaveBlog="OnSaveBlogDet" OnCloseForm="CloseBlogFormAsync" />
+</dialog>
+<style type="text/css">
+    dialog {
+        padding: 0;
+        border: 2px solid;
+    }
+</style>
+
+
+@code {
+    private const string _BlogFormDialogId = "Blog-form";
+    private bool _loading = false;
+    private List<Blog> Blogs;
+
+    private Blog _BlogModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBlogsAsync();
+    }
+
+    private async Task LoadBlogsAsync()
+    {
+        _loading = true;
+        try
+        {
+            Blogs = await BlogService.GetAllBlogs();
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task OnSaveBlogDet(MethodResult saveBlogResult)
+    {
+        if (saveBlogResult.Status)
+        {
+            //Blog saved successfully
+            await AlertAsync("Blog Saved Successfully");
+            await LoadBlogsAsync();
+            await Js.InvokeVoidAsync("window.closeModal", _BlogFormDialogId);
+        }
+        else
+        {
+            //there was some error
+            await AlertAsync(saveBlogResult.ErrorMessage!);
+        }
+    }
+
+    private async Task AlertAsync(string message)
+    {
+        await Js.InvokeVoidAsync("window.alert", message);
+    }
+
+    private async Task OpenBlogFormAsync()
+    {
+        _BlogModel = new();
+        await Js.InvokeVoidAsync("window.openModal", _BlogFormDialogId);
+    }
+
+    private async Task CloseBlogFormAsync()
+    {
+        _BlogModel = new();
+        await Js.InvokeVoidAsync("window.closeModal", _BlogFormDialogId);
+    }
+
+    private async Task EditBlogAsync(Blog Blog)
+    {
+        _BlogModel = Blog.Clone();
+        await Js.InvokeVoidAsync("window.openModal", _BlogFormDialogId);
+    }
+
+    private async void DeleteBlogAsync(int Id)
+    {
+        await BlogService.DeleteBlog(Id);
+        await LoadBlogsAsync();
+        await AlertAsync("Blog Deleted Successfully");
+    }
 }

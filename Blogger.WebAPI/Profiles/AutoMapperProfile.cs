@@ -4,6 +4,7 @@ using Blogger.WebAPI.Data;
 using Blogger.WebAPI.DTO.User;
 using Blogger.WebAPI.DTO.Category;
 using Blogger.Shared.Models;
+using Blogger.Shared.DTO;
 
 namespace Blogger.WebAPI.Profiles
 {
@@ -22,6 +23,10 @@ namespace Blogger.WebAPI.Profiles
                 .ReverseMap();
 
             CreateMap<Category, CategoryDTO>()
+                //.ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
+
+            CreateMap<Blog, BlogDTO>()
                 //.ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
         }

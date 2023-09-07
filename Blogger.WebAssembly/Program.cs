@@ -13,5 +13,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7231/") });
 builder.Services.AddSingleton<IAppService, AppService>();
 builder.Services.AddSingleton<ICategoryService, CategoryService>();
+builder.Services.AddSingleton<IBlogService, BlogService>();
 
 await builder.Build().RunAsync();

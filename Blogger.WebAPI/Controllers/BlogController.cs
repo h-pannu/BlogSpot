@@ -1,4 +1,5 @@
 ﻿using Blogger.Shared.DTO;
+using Blogger.Shared.Models;
 using Blogger.WebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,10 @@ namespace Blogger.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogsController : ControllerBase
+    public class BlogController : ControllerBase
     {
         private readonly IBlogService _blogService;
-        public BlogsController(IBlogService blogService)
+        public BlogController(IBlogService blogService)
         {
             _blogService = blogService;
         }

@@ -1,0 +1,70 @@
+﻿@inject IBlogService BlogService
+
+<EditForm Model="_blogModel" OnValidSubmit="SaveBlogAsync">
+    <DataAnnotationsValidator />
+    <div class="card border-0">
+        <div class="card-header bg-purple text-white d-flex justify-content-between align-items-center">
+            <h4>@(_blogModel.Id > 0 ? "Edit" : "Add New") Blog</h4>
+            <button type="button" class="btn btn-sm btn-danger" @onclick="CloseFormAsync">X</button>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Name: </label>
+                <InputText @bind-Value="_blogModel.Title" class="form-control" placeholder="Blog Title" @onblur="OnNameBlur" />
+                <ValidationMessage For="() => _blogModel.Title" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Slug: </label>
+                <InputText @bind-Value="_blogModel.Slug" class="form-control" placeholder="Blog Slug" disabled="@(_blogModel.Id > 0)" />
+                <ValidationMessage For="() => _blogModel.Slug" />
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <button type="button" class="btn-secondary" @onclick="CloseFormAsync">Cancel</button>
+            <button type="button" class="btn-primary" @onclick="() => SaveBlogAsync()">Save</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<MethodResult> OnSaveBlog { get; set; }
+
+    [Parameter]
+    public EventCallback OnCloseForm { get; set; }
+
+    [Parameter]
+    public Blog BlogParm { get; set; }
+
+    private Blog _blogModel = new();
+
+    private async Task SaveBlogAsync()
+    {
+        MethodResult result = await BlogService.SaveBlogAsync(_blogModel);
+        if (result.Status)
+        {
+            _blogModel = new();
+        }
+        await OnSaveBlog.InvokeAsync(result);
+    }
+
+    private async Task CloseFormAsync()
+    {
+        _blogModel = new();
+        await OnCloseForm.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _blogModel = BlogParm;
+    }
+
+    private void OnNameBlur()
+    {
+        if (_blogModel.Id == 0 && !string.IsNullOrWhiteSpace(_blogModel.Title))
+        {
+            _blogModel.Slug = _blogModel.Title.Slugify();
+        }
+    }
+}
