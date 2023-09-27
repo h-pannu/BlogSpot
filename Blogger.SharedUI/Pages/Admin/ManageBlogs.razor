@@ -6,7 +6,8 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h3>Manage Blogs</h3>
-        <button class="btn btn-primary btn-sm" @onclick="OpenBlogFormAsync">+ Add new Blog</button>
+        <button class="btn btn-primary btn-sm" @onclick="OpenBlogFormAsync">+ Add new Blog Post</button>
+        <NavLink class="btn btn-primary btn-sm" href="/admin/manage-blogs/new">+ Add new Blog Post</NavLink>
     </div>
     <hr />
     <table class="table">
@@ -15,7 +16,11 @@
                 <th>#</th>
                 <th>Id</th>
                 <th>Title</th>
+                <th>Category</th>
+                <th>Created/Modified</th>
+                <th>Published</th>
                 <th>Slug</th>
+                <th>Edit</th>
                 <th>Delete Record</th>
             </tr>
         </thead>
@@ -23,7 +28,7 @@
             @if (_loading)
             {
                 <tr>
-                    <td colspan="4">
+                    <td colspan="9" class="text-center">
                         Loading Blogs.......
                     </td>
                 </tr>
@@ -31,23 +36,41 @@
             else if (!_loading && (Blogs is null || !Blogs.Any()))
             {
                 <tr>
-                    <td colspan="4">
-                        no Blogs found
+                    <td colspan="9" class="text-center">
+                        <h3 class="mb-3">No Blogs found</h3>
+                        <NavLink class="btn btn-primary btn-sm" href="/admin/manage-blogs/new">Create first blog post</NavLink>
                     </td>
                 </tr>
             }
             else
             {
                 int sno = 1;
-                @foreach (var Blog in Blogs)
+                @foreach (var blog in Blogs)
                 {
+                    var editBloglink = $"/admin/manage-blogs/edit/{blog.Id}";
                     <tr>
                         <td>@sno</td>
-                        <td>@Blog.Id</td>
-                        <td>@Blog.Title</td>
-                        <td>@Blog.Slug</td>
-                        <td><button class="btn btn-primary btn-sm" @onclick="() => EditBlogAsync(Blog)">Edit</button></td>
-                        <td><button class="btn btn-primary btn-sm" @onclick="() => DeleteBlogAsync(Blog.Id)">Delete</button></td>
+                        <td>@blog.Id</td>
+                        <td>@blog.Title</td>
+                        <td>@blog.CategoryName</td>
+                        <td>
+                            @blog.ModifiedOn.HasValue ? @blog.ModifiedOn.Value.ToShortDateString() : @blog.CreatedOn.ToShortDateString()
+                            </td>
+                        <td>
+                            @if (@blog.IsPublished)
+                            {
+                                <span class="text-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">No</span>
+                            }
+                        </td>
+                        <td>@blog.Slug</td>
+                        <td>@* <button class="btn btn-primary btn-sm" @onclick="() => EditBlogAsync(blog)">Edit</button> *@
+                           <NavLink href="@editBloglink" class="btn btn-primary btn-sm">Edit</NavLink> 
+                        </td>
+                        <td><button class="btn btn-primary btn-sm" @onclick="() => DeleteBlogAsync(blog.Id)">Delete</button></td>
                     </tr>
                     sno++;
                 }

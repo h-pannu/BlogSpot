@@ -134,12 +134,12 @@ namespace Blogger.WebAPI.Services
                     existingBlog.Title = BlogDTO.Title;
                     existingBlog.Slug = BlogDTO.Slug;
                     existingBlog.CategoryId = BlogDTO.CategoryId;
-                    existingBlog.UserId = BlogDTO.UserId;
+                    //existingBlog.UserId = BlogDTO.UserId;
                     existingBlog.Introduction= BlogDTO.Introduction;
                     existingBlog.Content = BlogDTO.Content;
                     existingBlog.IsPublished = BlogDTO.IsPublished;
-                    existingBlog.PublishedOn = BlogDTO.PublishedOn;
-                    existingBlog.ModifiedOn = BlogDTO.ModifiedOn;
+                    //existingBlog.PublishedOn = BlogDTO.PublishedOn;
+                    //existingBlog.ModifiedOn = BlogDTO.ModifiedOn;
                     await _context.SaveChangesAsync();
 
                     response.IsSuccess = true;

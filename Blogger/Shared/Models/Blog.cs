@@ -27,7 +27,12 @@ namespace Blogger.Shared.Models
         public DateTime? PublishedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public virtual Category? Category { get; set; }
+
+        //public virtual  User { get; set; }
+
+        [NotMapped]
+        public string CategoryName => Category is not null ? Category.Name : "";
+
         public Blog Clone() => (Blog)this.MemberwiseClone();
-        //public virtual Blogger.WebAPI.Data.Users User { get; set; }
     }
 }
