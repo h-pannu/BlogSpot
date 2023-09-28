@@ -46,6 +46,9 @@ namespace Blogger.WebAssembly.Services
         public async Task<MethodResult> SaveBlogAsync(Blog blog)
         {
             blog.Slug = blog.Slug.Slugify();
+            blog.CreatedOn = DateTime.Now;
+            blog.PublishedOn = DateTime.Now;
+            blog.ModifiedOn = DateTime.Now;
             try
             {
                 using (var client = new HttpClient())
@@ -56,13 +59,13 @@ namespace Blogger.WebAssembly.Services
                     //serializedStr = "'{\r\n  \"id\": 0,\r\n  \"title\": \"string\",\r\n  \"slug\": \"string\",\r\n  \"categoryId\": 0,\r\n  \"userId\": 0,\r\n  \"introduction\": \"string\",\r\n  \"content\": \"string\",\r\n  \"createdOn\": \"2023-09-06T23:14:28.853Z\",\r\n  \"isPublished\": true,\r\n  \"publishedOn\": \"2023-09-06T23:14:28.853Z\",\r\n  \"modifiedOn\": \"2023-09-06T23:14:28.853Z\",\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"string\",\r\n    \"slug\": \"string\"\r\n  }\r\n}'";
                     if (blog.Id > 0)
                     {
-                        //update category
+                        //update blog
                         url = $"{Setting.BaseUrl}{APIs.UpdateBlog}";
                         response = await client.PutAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
                     }
                     else
                     {
-                        //add category
+                        //add blog
                         url = $"{Setting.BaseUrl}{APIs.AddBlog}";
                         response = await client.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
                     }
